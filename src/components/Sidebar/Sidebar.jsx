@@ -24,6 +24,7 @@ export default class Sidebar extends React.Component {
 
         this.state = {
             isOpened: true,
+            activeRoute: null
         };
     }
 
@@ -33,29 +34,38 @@ export default class Sidebar extends React.Component {
 
     goToRoute = (path) => {
         console.log(`going to "${path}"`);
+        this.setState(() => ({ activeRoute: path }));
     };
 
     render() {
-        const { isOpened } = this.state;
+        const { isOpened, activeRoute } = this.state;
         const containerClassnames = classnames('sidebar', { opened: isOpened });
 
+        const routeActive = (path) => {
+            return activeRoute === path ? 'active' : ''
+        }
         return (
             <div className={ containerClassnames }>
-                <div>
+                <div className='sidebar-logo_container'>
                     <img
                         src={ logo }
                         alt="TensorFlow logo"
+                        className='sidebar-logo'
                     />
                     <span>TensorFlow</span>
-                    <button onClick={ this.toggleSidebar }>
-                        <FontAwesomeIcon icon={ isOpened ? 'angle-left' : 'angle-right' } />
-                    </button>
+
+                    <div className='sidebar-arrow'>
+                        <button onClick={ this.toggleSidebar }>
+                            <FontAwesomeIcon icon='angle-right'/>
+                        </button>
+                    </div>
                 </div>
 
-                <div>
+                <div className='sidebar-items'>
                     {
                         routes.map((route) => (
-                            <div key={ route.title } onClick={ () => this.goToRoute(route.path) }>
+                            
+                            <div key={ route.title } onClick={ () => this.goToRoute(route.path) } className={routeActive(route.path)}>
                                 <FontAwesomeIcon icon={ route.icon } />
                                 <span>{ route.title }</span>
                             </div>
@@ -63,10 +73,10 @@ export default class Sidebar extends React.Component {
                     }
                 </div>
 
-                <div>
+                <div className='sidebar-items bottom'>
                     {
                         bottomRoutes.map((route) => (
-                            <div key={ route.title } onClick={ () => this.goToRoute(route.path) }>
+                            <div key={ route.title } onClick={ () => this.goToRoute(route.path) } className={routeActive(route.path)}>
                                 <FontAwesomeIcon icon={ route.icon } />
                                 <span>{ route.title }</span>
                             </div>
